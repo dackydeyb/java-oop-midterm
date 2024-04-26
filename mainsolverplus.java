@@ -5,6 +5,7 @@
 import javax.swing.*;
 import java.io.File;
 import java.io.PrintWriter;
+import java.io.FileWriter;
 
 public class mainsolverplus {
     public static void main(String[] args) throws Exception {
@@ -63,8 +64,17 @@ class RightSideDegree {
 
     RightSideDegree() throws Exception {
         getInput();
+        if (areAllSidesMissing()) {
+            JOptionPane.showMessageDialog(null, "At least one side must contain a value.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            getInput(); // Re-prompt for input after showing the error message.
+        }
         calculateMissingValues();
         displayResults();
+    }
+
+    private boolean areAllSidesMissing() {
+        // Check if all sides are marked as missing (-1)
+        return sideA == -1 && sideB == -1 && sideC == -1;
     }
 
     private void getInput() throws Exception {
@@ -74,43 +84,117 @@ class RightSideDegree {
         angleA = getDoubleFromInput("Enter the value of angle A (degrees): ", "Angle A");
         angleB = getDoubleFromInput("Enter the value of angle B (degrees): ", "Angle B");
     }
-    
-    private double getDoubleFromInput(String message, String title) throws Exception {
-        String input = JOptionPane.showInputDialog(null, message, title, JOptionPane.QUESTION_MESSAGE);
-        if (input.equals("")) {
-            return -1;
-        }
-        return Double.parseDouble(input);
-    }
-    
 
-    private void calculateMissingValues() throws Exception {
-        if (sideA == -1 && sideB != -1 && sideC != -1) { // Solve for sideA
-            sideA = Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideB, 2));
-        } else if (sideB == -1 && sideA != -1 && sideC != -1) { // Solve for sideB
-            sideB = Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideA, 2));
-        } else if (sideC == -1 && sideA != -1 && sideB != -1) { // Solve for sideC
-            sideC = Math.sqrt(Math.pow(sideA, 2) + Math.pow(sideB, 2));
+    private double getDoubleFromInput(String message, String title) throws Exception {
+        Object[] options = {"OK", "MISSING", "GO BACK", "Cancel"};
+        
+        int option = JOptionPane.showOptionDialog(null, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+        if (option == 0) { // OK
+            while (true) {
+                String input = JOptionPane.showInputDialog(null, "Enter a value:");
+                    if (input.equals("")) {
+                        JOptionPane.showMessageDialog(null, "You must enter a value", "Error", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        return Double.parseDouble(input);
+                    }
+            }
+        } else if (option == 1) { // MISSING, when clicked it will input -1
+            return -1;
+        } else if (option == 2) { // GO BACK
+            new TrianglePosition();
+            return -1;
+        } else { // Cancel or close
+            System.exit(0);
+            return -1; // This line will never be reached but is required to satisfy the compiler.
         }
-    
-        // Validate and calculate angles using trigonometric ratios if possible
-        if (angleA == -1 && sideA != -1 && sideC != -1) { // Solve for angle A using sine
+    }
+
+    private void calculateMissingValues() {
+
+        //iF the user enters a value of -1, the program will calculate the missing value and it will use Pythagorean theorem.
+        //!= means if the side# has values.
+        if (sideA == -1 && sideB != -1 && sideC != -1) {
+            sideA = Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideB, 2)); // We use -(negative) here because we transposed the formula
+        } else if (sideB == -1 && sideA != -1 && sideC != -1) {
+            sideB = Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideA, 2));
+        } else if (sideC == -1 && sideA != -1 && sideB != -1) {
+            sideC = Math.sqrt(Math.pow(sideA, 2) + Math.pow(sideB, 2));// Standard a^2 + b^2 = c^2 then square root to get c
+        }
+
+        if (angleA == -1 && sideA != -1 && sideC != -1) {
             angleA = Math.toDegrees(Math.asin(sideA / sideC));
         }
-        if (angleB == -1 && sideB != -1 && sideC != -1) { // Solve for angle B using cosine
+        if (angleB == -1 && sideB != -1 && sideC != -1) {
             angleB = Math.toDegrees(Math.acos(sideB / sideC));
         }
     }
-    
 
-    private void displayResults() {
-        String results = "Results:\n" +
+    private void displayResults() throws Exception {
+        String results = "Results:\n\n" +
                          "Side a (opposite): " + sideA + "\n" +
                          "Side b (adjacent): " + sideB + "\n" +
-                         "Side c (hypotenuse): " + sideC + "\n" +
+                         "Side c (hypotenuse): " + sideC + "\n\n" +
                          "Angle A: " + angleA + " degrees\n" +
                          "Angle B: " + angleB + " degrees\n"+
-                         "Angle C: 90.0 degrees\n";
-        JOptionPane.showMessageDialog(null, results, "Calculated Values", JOptionPane.INFORMATION_MESSAGE);
+                         "Angle C: 90.0 degrees";
+    
+                         Object[] options = {"OK", "SAVE", "GO BACK"};
+                         int option = JOptionPane.showOptionDialog(null, results, "Calculated Values",
+                                 JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+                 
+                         if (option == 1) { // SAVE selected
+                             saveResultsOutside();
+                         } else if (option == 2) { // GO BACK selected
+                                new TrianglePosition();
+                         }
+        // If OK or the close button is selected, do nothing and the program will terminate naturally.
     }
+
+
+    private class saveResultInside {
+        saveResultInside(double angleA, double angleB) throws Exception {
+            // Specify the relative path to the Midterm Project directory
+            File file = new File("Midterm Project/triangle_angles.txt");
+            PrintWriter writer = new PrintWriter(new FileWriter(file, true));
+    
+            writer.println("Angle A: " + angleA + " degrees");
+            writer.println("Angle B: " + angleB + " degrees");
+            writer.println("Last updated on: " + new java.util.Date());
+            writer.println(); // Adds a newline for separation between entries
+    
+            writer.close();
+    
+            JOptionPane.showMessageDialog(null, "Results have been saved to Midterm Project/triangle_angles.txt", "Results Saved", JOptionPane.INFORMATION_MESSAGE);
+            int option = JOptionPane.showOptionDialog(null, "Would you like to calculate again?", "Calculate again?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+            if (option == JOptionPane.YES_OPTION) {
+                new TrianglePosition();
+            } else {
+                JOptionPane.showMessageDialog(null, "Happy coding!", "Cheers", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+    }
+    
+    private void saveResultsOutside() throws Exception {
+        File file = new File("triangle_sides.txt");
+    
+        PrintWriter writer = new PrintWriter(new FileWriter(file, true));
+        writer.println("Hypotenuse: " + sideC);
+        writer.println("Adjacent: " + sideB);
+        writer.println("Opposite: " + sideA + "\n");
+        writer.println("Angle A: " + angleA + " degrees");
+        writer.println("Angle B: " + angleB + " degrees");
+        writer.println("Last updated on: " + new java.util.Date());
+        writer.println(); // Adds a newline for separation between entries
+    
+        writer.close();
+    
+        JOptionPane.showMessageDialog(null, "Results have been saved to Midterm Project/triangle_sides.txt", "Results Saved", JOptionPane.INFORMATION_MESSAGE);
+        int option = JOptionPane.showOptionDialog(null, "Would you like to calculate again?", "Calculate again?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+        if (option == JOptionPane.YES_OPTION) {
+            new TrianglePosition();
+        } else {
+            JOptionPane.showMessageDialog(null, "Happy coding!", "Cheers", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+    
 }
