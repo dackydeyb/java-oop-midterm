@@ -119,33 +119,34 @@ class OneAngleOneSide {
         }
 
         // Now use trigonometry to find missing sides:
+
         // Case when hypotenuse is known
         if (sideC != -1) {
             if (sideA == -1 && angleA != -1) { // Find opposite using sine
-                sideA = Math.sin(Math.toRadians(angleA)) * sideC;
+            sideA = Math.round((Math.sin(Math.toRadians(angleA)) * sideC) * 10) / 10.0;
             }
             if (sideB == -1 && angleA != -1) { // Find adjacent using cosine
-                sideB = Math.cos(Math.toRadians(angleA)) * sideC;
+            sideB = Math.round((Math.cos(Math.toRadians(angleA)) * sideC) * 10) / 10.0;
             }
         }
         
         // Case when one leg is known
         if (sideA != -1 && sideC == -1) { // Given opposite, find hypotenuse using sine
-            sideC = sideA / Math.sin(Math.toRadians(angleA));
+            sideC = Math.round((sideA / Math.sin(Math.toRadians(angleA))) * 10) / 10.0;
             if (sideB == -1) { // Calculate adjacent using Pythagorean theorem
-                sideB = Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideA, 2));
+            sideB = Math.round((Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideA, 2))) * 10) / 10.0;
             }
         } else if (sideB != -1 && sideC == -1) { // Given adjacent, find hypotenuse using cosine
-            sideC = sideB / Math.cos(Math.toRadians(angleA));
+            sideC = Math.round((sideB / Math.cos(Math.toRadians(angleA))) * 10) / 10.0;
             if (sideA == -1) { // Calculate opposite using Pythagorean theorem
-                sideA = Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideB, 2));
+            sideA = Math.round((Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideB, 2))) * 10) / 10.0;
             }
         }
 
         // Lastly, if both legs are known but hypotenuse is missing:
         if (sideA != -1 && sideB != -1 && sideC == -1) {
-            sideC = Math.sqrt(Math.pow(sideA, 2) + Math.pow(sideB, 2));
-    }
+            sideC = Math.round((Math.sqrt(Math.pow(sideA, 2) + Math.pow(sideB, 2))) * 10) / 10.0;
+        }
         
 
         // If angle A or B is not present and angle B or A is present, we can calculate angle A or B using the formula:  90 - angle B or A
@@ -286,11 +287,11 @@ class Sideside {
 
         // Pythagorean theorem
         if (sideA == -1 && sideB != -1 && sideC != -1) {
-            sideA = Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideB, 2)); // We use -(negative) here because we transposed the formula
+            sideA = Math.round(Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideB, 2)) * 10) / 10.0; // We use -(negative) here because we transposed the formula
         } else if (sideB == -1 && sideA != -1 && sideC != -1) {
-            sideB = Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideA, 2));
+            sideB = Math.round(Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideA, 2)) * 10) / 10.0;
         } else if (sideC == -1 && sideA != -1 && sideB != -1) {
-            sideC = Math.sqrt(Math.pow(sideA, 2) + Math.pow(sideB, 2));// Standard a^2 + b^2 = c^2 then square root to get c
+            sideC = Math.round(Math.sqrt(Math.pow(sideA, 2) + Math.pow(sideB, 2)) * 10) / 10.0;// Standard a^2 + b^2 = c^2 then square root to get c
         }
 
         // After calculating the missing side, we can calculate the missing angle using trigonometric functions.
@@ -323,9 +324,18 @@ class Sideside {
 
         Object[] options = { "OK", "SAVE", "GO BACK" };
         int option = JOptionPane.showOptionDialog(null, results, "Calculated Values",
-                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-
-        if (option == 1) { // SAVE selected
+            JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);   
+            
+        if (option == 0) {
+            int calculateAgainOption = JOptionPane.showOptionDialog(null, "Would you like to calculate again?", "Calculate again?",
+            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+            if (calculateAgainOption == JOptionPane.YES_OPTION) {
+            new Triangle();
+            } else {
+            JOptionPane.showMessageDialog(null, "Happy coding!", "Cheers", JOptionPane.INFORMATION_MESSAGE);
+            System.exit(0);
+            }
+        } else if (option == 1) { // SAVE selected
             saveResultsOutside();
         } else if (option == 2) { // GO BACK selected
             new Triangle();
