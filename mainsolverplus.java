@@ -57,8 +57,6 @@ class OneAngleOneSide {
     private double sideC; // Hypotenuse
     private double angleA;
     private double angleB;
-    private double[] sides = new double[3]; // sideA, sideB, sideC
-    private double[] angles = new double[2]; // angleA, angleB (angleC is always 90 degrees)
 
     
 
@@ -71,13 +69,6 @@ class OneAngleOneSide {
         }
         oneSideWithAngle();
         displayResults();
-        // Initialize all sides and angles to -1 (indicating that they are not set)
-        for (int i = 0; i < 3; i++) {
-            sides[i] = -1;
-        }
-        for (int i = 0; i < 2; i++) {
-            angles[i] = -1;
-        }
     }
 
     private void getInput() throws Exception {
@@ -129,48 +120,103 @@ class OneAngleOneSide {
 
         // Pythagorean theorem
         if (sideA == -1 && sideB != -1 && sideC != -1) {
-            sideA = Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideB, 2)); // We use -(negative) here because we transposed the formula
+            sideA = Math.round(Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideB, 2)) * 10) / 10.0; // We use -(negative) here because we transposed the formula
         } else if (sideB == -1 && sideA != -1 && sideC != -1) {
-            sideB = Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideA, 2));
+            sideB = Math.round(Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideA, 2)) * 10) / 10.0;
         } else if (sideC == -1 && sideA != -1 && sideB != -1) {
-            sideC = Math.sqrt(Math.pow(sideA, 2) + Math.pow(sideB, 2));// Standard a^2 + b^2 = c^2 then square root to get c
+            sideC = Math.round(Math.sqrt(Math.pow(sideA, 2) + Math.pow(sideB, 2)) * 10) / 10.0;// Standard a^2 + b^2 = c^2 then square root to get c
         }
 
         if (sideA != -1 && sideB == -1 && sideC == -1 && angleA != -1 && angleB == -1) {
             angleA = Math.toRadians(angleA); // converting to radians
-            sideB = sideA / Math.tan(angleA); // adjacent = opposite / tan(angle)
-            sideC = sideA / Math.sin(angleA); // hypotenuse = opposite / sin(angle)
+            sideB = Math.round((sideA / Math.tan(angleA)) * 10) / 10.0; // adjacent = opposite / tan(angle)
+            sideC = Math.round((sideA / Math.sin(angleA)) * 10) / 10.0; // hypotenuse = opposite / sin(angle)
+            angleA = Math.round(Math.toDegrees(angleA) * 10) / 10.0; // converting back to degrees
         } 
 
         else if (sideA == -1 && sideB != -1 && sideC == -1 && angleA != -1 && angleB == -1) {
             angleA = Math.toRadians(angleA); // converting to radians
-            sideA = sideB * Math.tan(angleA); // opposite = adjacent * tan(angle)
-            sideC = sideB / Math.cos(angleA); // hypotenuse = adjacent / cos(angle)
+            sideA = Math.round((sideB * Math.tan(angleA)) * 10) / 10.0; // opposite = adjacent * tan(angle)
+            sideC = Math.round((sideB / Math.cos(angleA)) * 10) / 10.0; // hypotenuse = adjacent / cos(angle)
+            angleA = Math.round(Math.toDegrees(angleA) * 10) / 10.0; // converting back to degrees
         } 
 
         else if (sideA == -1 && sideB == -1 && sideC != -1 && angleA != -1 && angleB == -1) {
             angleA = Math.toRadians(angleA); // converting to radians
-            sideA = sideC * Math.sin(angleA); // opposite = hypotenuse * sin(angle)
-            sideB = sideC * Math.cos(angleA); // adjacent = hypotenuse * cos(angle)
+            sideA = Math.round((sideC * Math.sin(angleA)) * 10) / 10.0; // opposite = hypotenuse * sin(angle)
+            sideB = Math.round((sideC * Math.cos(angleA)) * 10) / 10.0; // adjacent = hypotenuse * cos(angle)
+            angleA = Math.round(Math.toDegrees(angleA) * 10) / 10.0; // converting back to degrees
         }
         
         else if (sideA != -1 && sideB != -1 && sideC == -1 && angleA == -1 && angleB == -1) {
-            sideC = Math.sqrt(Math.pow(sideA, 2) + Math.pow(sideB, 2)); // hypotenuse = sqrt(a^2 + b^2)
-            angleA = Math.toDegrees(Math.atan(sideA / sideB)); // angle A = arctan(opposite/adjacent)
+            sideC = Math.round((Math.sqrt(Math.pow(sideA, 2) + Math.pow(sideB, 2))) * 10) / 10.0; // hypotenuse = sqrt(a^2 + b^2)
+            angleA = Math.round(Math.toDegrees(Math.atan(sideA / sideB)) * 10) / 10.0; // angle A = arctan(opposite/adjacent)
             angleB = 90 - angleA; // angle B = 90 - angle A
+            
         } 
         
         else if (sideA != -1 && sideB == -1 && sideC != -1 && angleA == -1 && angleB == -1) {
-            angleA = Math.toDegrees(Math.asin(sideA / sideC)); // angle A = arcsin(opposite/hypotenuse)
-            sideB = Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideA, 2)); // adjacent = sqrt(c^2 - a^2)
+            angleA = Math.round(Math.toDegrees(Math.asin(sideA / sideC)) * 10) / 10.0; // angle A = arcsin(opposite/hypotenuse)
+            sideB = Math.round((Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideA, 2))) * 10) / 10.0; // adjacent = sqrt(c^2 - a^2)
             angleB = 90 - angleA; // angle B = 90 - angle A
         } 
         
         else if (sideA == -1 && sideB != -1 && sideC != -1 && angleA == -1 && angleB == -1) {
-            angleA = Math.toDegrees(Math.acos(sideB / sideC)); // angle A = arccos(adjacent/hypotenuse)
-            sideA = Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideB, 2)); // opposite = sqrt(c^2 - b^2)
+            angleA = Math.round(Math.toDegrees(Math.acos(sideB / sideC)) * 10) / 10.0; // angle A = arccos(adjacent/hypotenuse)
+            sideA = Math.round((Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideB, 2))) * 10) / 10.0; // opposite = sqrt(c^2 - b^2)
             angleB = 90 - angleA; // angle B = 90 - angle A
         }
+
+
+        // TOA Tangent = Opposite side A /Adjacent side B
+        else if (sideA == -1 && sideB == -1 && sideC != -1 && angleA != -1 && angleB == -1) {
+            angleA = Math.toRadians(angleA); // converting to radians
+            sideA = Math.round((sideC * Math.sin(angleA)) * 10) / 10.0; // opposite = hypotenuse * sin(angle)
+            sideB = Math.round((sideC * Math.cos(angleA)) * 10) / 10.0; // adjacent = hypotenuse * cos(angle)
+            angleA = Math.round(Math.toDegrees(angleA) * 10) / 10.0; // converting back to degrees
+            angleB = 90 - angleA; // automatically set angle B since it's a right triangle
+        } 
+
+        else if (sideA == -1 && sideB == -1 && sideC != -1 && angleA == -1 && angleB != -1) {
+            angleB = Math.toRadians(angleB); // converting angle B to radians
+            sideA = Math.round(sideC * Math.sin(angleB) * 10) / 10.0; // side a (opposite to angle B) = hypotenuse * sin(angle B)
+            sideB = Math.round(sideC * Math.cos(angleB) * 10) / 10.0; // side b (adjacent to angle B) = hypotenuse * cos(angle B)
+            angleA = Math.toDegrees(Math.asin(sideA / sideC)); // angle A = arcsin(opposite/hypotenuse) in degrees
+            angleA = Math.round(angleA * 10) / 10.0; // rounding angle A to one decimal place
+            angleB = Math.toDegrees(angleB); // converting angle B back to degrees from radians
+            angleB = Math.round(angleB * 10) / 10.0; // rounding angle B to one decimal place
+        }
+
+        // SOH Sin = Opposite side A / hypotenuse side B
+        else if (sideA == -1 && sideC == -1 && sideB != -1 && angleA == -1 && angleB != -1 ) {
+            angleB = Math.toRadians(angleB); // converting angle B to radians
+            // Since sideB is the adjacent side to angle B, and angle C is 90 degrees, angle A is the complement to angle B
+            angleA = Math.toRadians(90 - angleB); // angle A in radians
+            sideA = Math.round(sideB * Math.tan(angleB) * 10) / 10.0; // opposite = adjacent * tan(angle B)
+            sideC = Math.round(sideB / Math.cos(angleB) * 10) / 10.0; // hypotenuse = adjacent / cos(angle B)
+            angleA = Math.round(Math.toDegrees(angleA) * 10) / 10.0; // converting angle A back to degrees
+        }
+
+        else if (sideA == -1 && sideC == -1 && sideB != -1 && angleA != -1 && angleB == -1) {
+            angleA = Math.toRadians(angleA); // converting angle A to radians for calculation
+            sideC = Math.round(sideB / Math.sin(angleA) * 10) / 10.0; // side c (hypotenuse) = adjacent side b / sin(angle A)
+            sideA = Math.round(sideC * Math.sin(angleA) * 10) / 10.0; // side a (opposite) = hypotenuse side c * sin(angle A)
+            angleB = 90 - Math.toDegrees(angleA); // angle B in degrees
+            angleB = Math.round(angleB * 10) / 10.0; // rounding angle B to one decimal place
+        }
+
+
+        // CAH Cos = Adjacent side A / hypotenuse side B
+        else if (sideB == -1 && sideC == -1 && sideA != -1 && angleA != -1) {
+            angleA = Math.toRadians(angleA); // converting angle A to radians
+            // Since sideA is the opposite side to angle A, and angle C is 90 degrees, angle B is the complement to angle A
+            angleB = Math.toRadians(90 - angleA); // angle B in radians
+            sideB = Math.round(sideA / Math.tan(angleA) * 10) / 10.0; // adjacent = opposite / tan(angle A)
+            sideC = Math.round(sideA / Math.sin(angleA) * 10) / 10.0; // hypotenuse = opposite / sin(angle A)
+            angleB = Math.round(Math.toDegrees(angleB) * 10) / 10.0; // converting angle B back to degrees
+        }
+
+            
 
         // If angle A or B is not present and angle B or A is present, we can calculate angle A or B using the formula:  90 - angle B or A
         if (angleA != -1 && angleB == -1) {
@@ -178,9 +224,9 @@ class OneAngleOneSide {
         } else if (angleB != -1 && angleA == -1) {
             angleA = 90 - angleB;
         }
-    }
+        }
 
-    private void displayResults() throws Exception {
+        private void displayResults() throws Exception {
 
         String results = "Results:\n\n" +
                 "Side a (opposite): " + sideA + "\n" +
@@ -210,15 +256,15 @@ class OneAngleOneSide {
         writer.println("Hypotenuse: " + sideC);
         writer.println("Adjacent: " + sideB);
         writer.println("Opposite: " + sideA + "\n");
-        writer.println("Angle A: " + Math.toDegrees(angleA) + " degrees");
-        writer.println("Angle B: " + Math.toDegrees(angleB) + " degrees\n");
-        writer.println("Total Angles: " + (Math.toDegrees(angleA) + Math.toDegrees(angleB) + 90.0) + "degrees\n");
+        writer.println("Angle A: " + angleA + " degrees");
+        writer.println("Angle B: " + angleB + " degrees\n");
+        writer.println("Total Angles: " + (angleA + angleB + 90.0) + "degrees\n");
         writer.println("Last updated on: " + new java.util.Date());
         writer.println(); // Adds a newline for separation between entries
 
         writer.close();
 
-        JOptionPane.showMessageDialog(null, "Results have been saved to Midterm Project/triangle_sides.txt",
+        JOptionPane.showMessageDialog(null, "Results have been saved to \"One Side One Angle\".txt",
                 "Results Saved", JOptionPane.INFORMATION_MESSAGE);
         int option = JOptionPane.showOptionDialog(null, "Would you like to calculate again?", "Calculate again?",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
@@ -371,8 +417,7 @@ class Sideside {
         writer.println(); // Adds a newline for separation between entries
 
         writer.close();
-
-        JOptionPane.showMessageDialog(null, "Results have been saved to Midterm Project/triangle_sides.txt",
+        JOptionPane.showMessageDialog(null, "Results have been saved to \"Two sides with or without Angles.txt\"",
                 "Results Saved", JOptionPane.INFORMATION_MESSAGE);
         int option = JOptionPane.showOptionDialog(null, "Would you like to calculate again?", "Calculate again?",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
