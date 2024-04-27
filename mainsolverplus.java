@@ -10,10 +10,11 @@ import java.io.FileWriter;
 
 public class mainsolverplus {
     public static void main(String[] args) throws Exception {
-        new WelcomeMessage();
+        new WelcomeMessage(); // Go to the WelcomeMessage class
     }
 }
 
+// The WelcomeMessage class will display a welcome message and ask the user to click START or EXIT
 class WelcomeMessage {
     WelcomeMessage() throws Exception {
         String[] options = { "START", "EXIT" };
@@ -21,15 +22,15 @@ class WelcomeMessage {
         int choice = JOptionPane.showOptionDialog(null,
                 "Welcome to the Main Solver+ !\nThis program will help you solve your triangle math\n\nClick START to continue",
                 "Main Solver+", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-
         if (choice == 0) {
-            new Triangle();
+            new Triangle(); // Go to the Triangle class
         } else {
             System.exit(0);
         }
     }
 }
 
+// The Triangle class will ask the user to select the type of given values
 class Triangle {
     Triangle() throws Exception {
 
@@ -39,10 +40,9 @@ class Triangle {
                 "Type of Given", JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
 
         if ("-- Please select --".equals(part)) {
-            new Triangle();
+            new Triangle(); // Re-prompt.
         } else if ("1 Side and 1 Angle".equals(part)) {
             new OneAngleOneSide();
-            /* new LeftSideDegree() */;
         } else if ("2 Sides with or without Angles".equals(part)) {
             new Sideside();
         } else {
@@ -51,18 +51,23 @@ class Triangle {
     }
 }
 
-class OneAngleOneSide {
+class OneAngleOneSide { // Contains all the methods for solving a right triangle with one angle and one side.
+
+    // Initialize the sides and angles as -1 to indicate that they are missing
+    // Why -1? Because the user can input 0 as a value for the sides and angles.
+    // Also -1 acts like a placeholder to tell the compiler that the value is missing.
     private double sideA; // Opposite
     private double sideB; // Adjacent
     private double sideC; // Hypotenuse
     private double angleA;
     private double angleB;
+    // angle C is given as 90 degrees since my topic is about 'Solutions of Right Triangle'
 
-    
-
+    // Constructor
     OneAngleOneSide() throws Exception {
         getInput();
-        if (areAllSidesMissing()) {
+        if (areAllSidesMissing()) {// If true, show an error message and re-prompt for input... If false, proceed
+                                    // to calculate the missing values
             JOptionPane.showMessageDialog(null, "At least one side must contain a value.", "Input Error",
                     JOptionPane.ERROR_MESSAGE);
             getInput();
@@ -71,6 +76,8 @@ class OneAngleOneSide {
         displayResults();
     }
 
+    // Get the input from the user
+    // The user can input -1 to indicate that the side is missing
     private void getInput() throws Exception {
         sideA = getDoubleFromInput("Enter the value of the opposite side (a): ", "Opposite Side");
         sideB = getDoubleFromInput("Enter the value of the adjacent side (b): ", "Adjacent Side");
@@ -80,12 +87,13 @@ class OneAngleOneSide {
     }
 
     private double getDoubleFromInput(String message, String title) throws Exception {
-        Object[] options = { "OK", "MISSING", "GO BACK", "Cancel" };
 
+        Object[] options = { "OK", "MISSING", "GO BACK", "Cancel" };
         int option = JOptionPane.showOptionDialog(null, message, title, JOptionPane.DEFAULT_OPTION,
                 JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-        if (option == 0) { // OK
-            while (true) {
+        
+            if (option == 0) { // OK
+            while (true) { // Loop until the user enters a valid value
                 String input = JOptionPane.showInputDialog(null, "Enter a value:");
                 if (input.equals("")) {
                     JOptionPane.showMessageDialog(null, "You must enter a value", "Error", JOptionPane.ERROR_MESSAGE);
@@ -101,15 +109,17 @@ class OneAngleOneSide {
             return -1;
         } else { // Cancel or close
             System.exit(0);
-            return -1;
+            return -1; // To avoid the error "missing return statement"
         }
     }
 
     // Check if all sides are marked as missing (-1)
+    // If all sides are missing, the program will show an error message and re-prompt for input
     private boolean areAllSidesMissing() {
         return sideA == -1 && sideB == -1 && sideC == -1;
     }
 
+    // this method will calculate the missing sides and angles
     private void oneSideWithAngle() throws Exception {
 
         // Check if the sides form a valid right triangle
@@ -121,7 +131,6 @@ class OneAngleOneSide {
         // Now use trigonometry to find missing sides:
 
         // Case when hypotenuse is known
-        // Adjust angles based on given values
         if (angleA == -1 && angleB != -1) {
             angleA = 90 - angleB; // Since it's a right triangle
         } else if (angleB == -1 && angleA != -1) {
@@ -184,8 +193,8 @@ class OneAngleOneSide {
         }
         }
         
+        // Display the results to the user
         private void displayResults() throws Exception {
-
         String results = "Results:\n\n" +
                 "Side a (opposite): " + sideA + "\n" +
                 "Side b (adjacent): " + sideB + "\n" +
@@ -200,16 +209,21 @@ class OneAngleOneSide {
                 JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
     
         if (option == 1) { // SAVE selected
-            saveResultsOutside();
+            saveResultsOutside(); // Save the results to a file and will go to saveResultsOutside method
         } else if (option == 2) { // GO BACK selected
             new Triangle();
         }
     }
     
-
+    // Save the results to a file
+    // The file will be stacked with the results of each calculation
+    // with the use of the PrintWriter class to write to a file.
+    // If I use FileWriter, it will overwrite the file each time the program is run
     private void saveResultsOutside() throws Exception {
         File file = new File("One Side One Angle.txt");
 
+        // When you're writing to a file, you often wrap PrintWriter around a FileWriter to handle file creation and character encoding
+        // The second argument true in FileWriter constructor is for enabling the append mode, which allows you to add to the existing content of the file instead of overwriting it.
         PrintWriter writer = new PrintWriter(new FileWriter(file, true));
         writer.println("Hypotenuse: " + sideC);
         writer.println("Adjacent: " + sideB);
@@ -221,7 +235,7 @@ class OneAngleOneSide {
         writer.println(); // Adds a newline for separation between entries
         writer.println("=============================================================");
 
-        writer.close();
+        writer.close(); // After writing data, I should close the PrintWriter object to release the resources.
 
         JOptionPane.showMessageDialog(null, "Results have been saved to \"One Side One Angle\".txt",
                 "Results Saved", JOptionPane.INFORMATION_MESSAGE);
@@ -235,9 +249,9 @@ class OneAngleOneSide {
     }
 }
 
-
-
-
+// The Sideside class will calculate the missing sides and angles of a right triangle with two sides given
+// Same as the OneAngleOneSide class, but this time, we have two sides given,
+// the only difference in this Sideside class is the method used to calculate the missing values.
 
 class Sideside {
 
@@ -315,19 +329,29 @@ class Sideside {
 
         // Pythagorean theorem
         if (sideA == -1 && sideB != -1 && sideC != -1) {
-            sideA = Math.round(Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideB, 2)) * 10) / 10.0; // We use -(negative) here because we transposed the formula
+            sideA = Math.round(Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideB, 2)) * 100) / 100.0; // We use -(negative) here because we transposed the formula
         } else if (sideB == -1 && sideA != -1 && sideC != -1) {
-            sideB = Math.round(Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideA, 2)) * 10) / 10.0;
-        } else if (sideC == -1 && sideA != -1 && sideB != -1) {
-            sideC = Math.round(Math.sqrt(Math.pow(sideA, 2) + Math.pow(sideB, 2)) * 10) / 10.0;// Standard a^2 + b^2 = c^2 then square root to get c
+            sideB = Math.round(Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideA, 2)) * 100) / 100.0;
+        } else if (sideC == -1 && sideA != -1 && sideB != -1) { 
+             /* If side C is missing, Calculate sideC using the Pythagorean theorem
+             By adding the calculation for side C as shown, the method now covers the case where 
+             side C is missing and ensures that all sides and angles can be determined from just two known sides. */
+            sideC = Math.round(Math.sqrt(Math.pow(sideA, 2) + Math.pow(sideB, 2)) * 100) / 100.0;// Standard a^2 + b^2 = c^2 then square root to get c
         }
 
         // After calculating the missing side, we can calculate the missing angle using trigonometric functions.
-        if (angleA == -1 && sideA != -1 && sideB != -1) { // TOA Tangent = Opposite side A /Adjacent side B
+        // TOA Tangent = Opposite side A /Adjacent side B
+        // I will use TOA since I have the opposite and adjacent sides.
+        // I will use Math.atan to get the angle in radians then convert it to degrees using Math.toDegrees.
+        
+        // Availability of Sides: If two sides of a right triangle are known and they are the opposite and 
+        // adjacent sides relative to one of the non-right angles, then the tangent function is the direct choice because it uses those two sides.
+
+        if (angleA == -1 && sideA != -1 && sideB != -1) { // If angle A is missing and side A and side B are present, we can calculate angle A
             angleA = Math.round(Math.toDegrees(Math.atan(sideA / sideB)) * 100) / 100.0;
             angleB = Math.round((90 - angleA) * 100) / 100.0;
         }
-        if (angleB == -1 && sideA != -1 && sideB != -1) {
+        if (angleB == -1 && sideA != -1 && sideB != -1) { // If angle B is missing and side A and side B are present, we can calculate angle B
             angleB = Math.round(Math.toDegrees(Math.atan(sideB / sideA)) * 100) / 100.0;
             angleA = Math.round((90 - angleB) * 100) / 100.0;
         }
@@ -376,7 +400,7 @@ class Sideside {
 
         PrintWriter writer = new PrintWriter(new FileWriter(file, true));
         writer.println("Hypotenuse: " + sideC);
-        writer.println("Adjacent: " + sideB);
+        writer.println("Adjacent: " + sideB);   
         writer.println("Opposite: " + sideA + "\n");
         writer.println("Angle A: " + angleA + " degrees");
         writer.println("Angle B: " + angleB + " degrees\n");
