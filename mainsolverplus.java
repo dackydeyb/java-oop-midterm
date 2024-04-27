@@ -371,7 +371,7 @@ class Sideside {
                 "Side c (hypotenuse): " + sideC + "\n\n" +
                 "Angle A: " + angleA + " degrees\n" +
                 "Angle B: " + angleB + " degrees\n" +
-                "Angle C: 90.0 degrees\n" +
+                "Angle C: 90.00 degrees\n" +
                 "Total Angle: " + (angleA + angleB + 90.0) + " degrees\n\n";
 
         Object[] options = { "OK", "SAVE", "GO BACK" };
