@@ -121,32 +121,59 @@ class OneAngleOneSide {
         // Now use trigonometry to find missing sides:
 
         // Case when hypotenuse is known
+        // Adjust angles based on given values
+        if (angleA == -1 && angleB != -1) {
+            angleA = 90 - angleB; // Since it's a right triangle
+        } else if (angleB == -1 && angleA != -1) {
+            angleB = 90 - angleA;
+        }
+
+        // Trigonometric calculations for known hypotenuse
         if (sideC != -1) {
             if (sideA == -1 && angleA != -1) { // Find opposite using sine
-            sideA = Math.round((Math.sin(Math.toRadians(angleA)) * sideC) * 10) / 10.0;
+            sideA = Math.sin(Math.toRadians(angleA)) * sideC;
             }
             if (sideB == -1 && angleA != -1) { // Find adjacent using cosine
-            sideB = Math.round((Math.cos(Math.toRadians(angleA)) * sideC) * 10) / 10.0;
-            }
-        }
-        
-        // Case when one leg is known
-        if (sideA != -1 && sideC == -1) { // Given opposite, find hypotenuse using sine
-            sideC = Math.round((sideA / Math.sin(Math.toRadians(angleA))) * 10) / 10.0;
-            if (sideB == -1) { // Calculate adjacent using Pythagorean theorem
-            sideB = Math.round((Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideA, 2))) * 10) / 10.0;
-            }
-        } else if (sideB != -1 && sideC == -1) { // Given adjacent, find hypotenuse using cosine
-            sideC = Math.round((sideB / Math.cos(Math.toRadians(angleA))) * 10) / 10.0;
-            if (sideA == -1) { // Calculate opposite using Pythagorean theorem
-            sideA = Math.round((Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideB, 2))) * 10) / 10.0;
+            sideB = Math.cos(Math.toRadians(angleA)) * sideC;
             }
         }
 
-        // Lastly, if both legs are known but hypotenuse is missing:
-        if (sideA != -1 && sideB != -1 && sideC == -1) {
-            sideC = Math.round((Math.sqrt(Math.pow(sideA, 2) + Math.pow(sideB, 2))) * 10) / 10.0;
+        // Trigonometric calculations for known adjacent (side B)
+        if (sideB != -1) {
+            if (sideC == -1 && angleA != -1) { // Find hypotenuse using cosine
+            sideC = sideB / Math.cos(Math.toRadians(angleA));
+            }
+            if (sideA == -1 && angleA != -1) { // Find opposite using tangent
+            sideA = Math.tan(Math.toRadians(angleA)) * sideB;
+            }
         }
+
+        // Trigonometric calculations for known opposite (side A)
+        if (sideA != -1) {
+            if (sideC == -1 && angleA != -1) { // Find hypotenuse using sine
+            sideC = sideA / Math.sin(Math.toRadians(angleA));
+            }
+            if (sideB == -1 && angleA != -1) { // Find adjacent using tangent
+            sideB = sideA / Math.tan(Math.toRadians(angleA));
+            }
+        }
+
+        // Calculations when one angle (B) and its opposite side (B) is known:
+        if (sideB != -1 && angleB != -1) {
+            if (sideC == -1) { // Find hypotenuse using sine of angle B
+            sideC = sideB / Math.sin(Math.toRadians(angleB));
+            }
+            if (sideA == -1) { // Find opposite using cosine of angle B (since angle B = 90 - angle A)
+            sideA = Math.cos(Math.toRadians(angleB)) * sideB;
+            }
+        }
+
+        // Round the values to two decimal places
+        sideA = Math.round(sideA * 100.0) / 100.0;
+        sideB = Math.round(sideB * 100.0) / 100.0;
+        sideC = Math.round(sideC * 100.0) / 100.0;
+        angleA = Math.round(angleA * 100.0) / 100.0;
+        angleB = Math.round(angleB * 100.0) / 100.0;
         
 
         // If angle A or B is not present and angle B or A is present, we can calculate angle A or B using the formula:  90 - angle B or A
@@ -156,7 +183,7 @@ class OneAngleOneSide {
             angleA = 90 - angleB;
         }
         }
-
+        
         private void displayResults() throws Exception {
 
         String results = "Results:\n\n" +
@@ -192,6 +219,7 @@ class OneAngleOneSide {
         writer.println("Total Angles: " + (angleA + angleB + 90.0) + "degrees\n");
         writer.println("Last updated on: " + new java.util.Date());
         writer.println(); // Adds a newline for separation between entries
+        writer.println("=============================================================");
 
         writer.close();
 
@@ -296,12 +324,12 @@ class Sideside {
 
         // After calculating the missing side, we can calculate the missing angle using trigonometric functions.
         if (angleA == -1 && sideA != -1 && sideB != -1) { // TOA Tangent = Opposite side A /Adjacent side B
-            angleA = Math.round(Math.toDegrees(Math.atan(sideA / sideB)) * 10) / 10.0;
-            angleB = Math.round((90 - angleA) * 10) / 10.0;
+            angleA = Math.round(Math.toDegrees(Math.atan(sideA / sideB)) * 100) / 100.0;
+            angleB = Math.round((90 - angleA) * 100) / 100.0;
         }
         if (angleB == -1 && sideA != -1 && sideB != -1) {
-            angleB = Math.round(Math.toDegrees(Math.atan(sideB / sideA)) * 10) / 10.0;
-            angleA = Math.round((90 - angleB) * 10) / 10.0;
+            angleB = Math.round(Math.toDegrees(Math.atan(sideB / sideA)) * 100) / 100.0;
+            angleA = Math.round((90 - angleB) * 100) / 100.0;
         }
 
         // If angle A or B is not present and angle B or A is present, we can calculate angle A or B using the formula:  90 - angle B or A
@@ -355,6 +383,7 @@ class Sideside {
         writer.println("Total Angles: " + (angleA + angleB + 90.0) + "degrees\n");
         writer.println("Last updated on: " + new java.util.Date());
         writer.println(); // Adds a newline for separation between entries
+        writer.println("=============================================================");
 
         writer.close();
         JOptionPane.showMessageDialog(null, "Results have been saved to \"Two sides with or without Angles.txt\"",
