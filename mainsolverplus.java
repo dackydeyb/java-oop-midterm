@@ -1,5 +1,6 @@
 //PADUADA, Dave Jhared G.
 // BSCpE II - IF
+// OOP Method used: Encapsulation
 // T & TH 10:30 - 13:30
 
 import javax.swing.*;
@@ -20,24 +21,25 @@ class WelcomeMessage {
         int choice = JOptionPane.showOptionDialog ( null, "Welcome to the Main Solver+ !\nThis program will help you solve your triangle math\n\nClick START to continue", "Main Solver+", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
     
         if (choice == 0) {
-            new TrianglePosition();
+            new Triangle();
         } else {
             System.exit(0);
         }
     }
 }
 
-class TrianglePosition {
-    TrianglePosition() throws Exception {
+class Triangle {
+    Triangle() throws Exception {
 
         String [] choices = {"-- Please select --", "Left side", "Right side", "Exit"};
 
         String part = (String) JOptionPane.showInputDialog(null, "Where is the 90 degree angle is located?", "Choose Position", JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
 
         if ("-- Please select --".equals(part)) {
-            new TrianglePosition();
+            new Triangle();
         } else if ("Left side".equals(part)) {
-            new LeftSideDegree();
+            System.exit(0);
+            /* new LeftSideDegree() */;
         } else if ("Right side".equals(part)) {
             new RightSideDegree();
         } else {
@@ -46,35 +48,35 @@ class TrianglePosition {
     }
 }
 
-class LeftSideDegree {
+/* class LeftSideDegree {
     LeftSideDegree() throws Exception {
         String sideA_Left = JOptionPane.showInputDialog(null, "Enter the value of the adjacent side: ", "Adjacent Side", JOptionPane.QUESTION_MESSAGE);
         String sideB_Left = JOptionPane.showInputDialog(null, "Enter the value of the opposite side: ", "Opposite Side", JOptionPane.QUESTION_MESSAGE);
         String sideC_Left = JOptionPane.showInputDialog(null, "Enter the value of the hypotenuse: ", "Hypotenuse", JOptionPane.QUESTION_MESSAGE);
     }
-}
+} */
 
 class RightSideDegree {
+
+    // Initialize the sides and angles as -1 to indicate that they are missing
 
     private double sideA; // Opposite
     private double sideB; // Adjacent
     private double sideC; // Hypotenuse
     private double angleA;
     private double angleB;
+    // angle C is given as 90 degrees since my topic is about 'Solutions of Right Triangle'
 
+    
     RightSideDegree() throws Exception {
         getInput();
-        if (areAllSidesMissing()) {
+        if (areAllSidesMissing()) { // If true, show an error message and re-prompt for input... If false, proceed to calculate the missing values                        
             JOptionPane.showMessageDialog(null, "At least one side must contain a value.", "Input Error", JOptionPane.ERROR_MESSAGE);
             getInput(); // Re-prompt for input after showing the error message.
         }
         calculateMissingValues();
+        calculateSideWithOneSideAndTwoAngles();
         displayResults();
-    }
-
-    private boolean areAllSidesMissing() {
-        // Check if all sides are marked as missing (-1)
-        return sideA == -1 && sideB == -1 && sideC == -1;
     }
 
     private void getInput() throws Exception {
@@ -87,31 +89,43 @@ class RightSideDegree {
 
     private double getDoubleFromInput(String message, String title) throws Exception {
         Object[] options = {"OK", "MISSING", "GO BACK", "Cancel"};
-        
+    
         int option = JOptionPane.showOptionDialog(null, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
         if (option == 0) { // OK
             while (true) {
                 String input = JOptionPane.showInputDialog(null, "Enter a value:");
-                    if (input.equals("")) {
-                        JOptionPane.showMessageDialog(null, "You must enter a value", "Error", JOptionPane.ERROR_MESSAGE);
-                    } else {
-                        return Double.parseDouble(input);
-                    }
+                if (input.equals("")) {
+                    JOptionPane.showMessageDialog(null, "You must enter a value", "Error", JOptionPane.ERROR_MESSAGE);
+                    getInput(); // Re-prompt for input after showing the error message.
+                } else {
+                    return Double.parseDouble(input);
+                }
             }
         } else if (option == 1) { // MISSING, when clicked it will input -1
             return -1;
         } else if (option == 2) { // GO BACK
-            new TrianglePosition();
+            new Triangle();
             return -1;
         } else { // Cancel or close
             System.exit(0);
-            return -1; // This line will never be reached but is required to satisfy the compiler.
+            return -1;
         }
     }
 
-    private void calculateMissingValues() {
+    // Check if all sides are marked as missing (-1)
+    private boolean areAllSidesMissing() { 
+        return sideA == -1 && sideB == -1 && sideC == -1;  
+    }
 
-        //iF the user enters a value of -1, the program will calculate the missing value and it will use Pythagorean theorem.
+    private void calculateMissingValues() throws Exception{
+
+        // Check if the sides form a valid right triangle
+        if (sideC != -1 && (sideA > sideC || sideB > sideC)) {
+            JOptionPane.showMessageDialog(null, "The hypotenuse must be greater than the other sides.", "Invalid Triangle", JOptionPane.ERROR_MESSAGE);
+            getInput(); // Re-prompt for input after showing the error message.
+        }
+
+        //iF the user enters a value of -1 or missing, the program will calculate the missing value and it will use Pythagorean theorem.
         //!= means if the side# has values.
         if (sideA == -1 && sideB != -1 && sideC != -1) {
             sideA = Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideB, 2)); // We use -(negative) here because we transposed the formula
@@ -121,12 +135,26 @@ class RightSideDegree {
             sideC = Math.sqrt(Math.pow(sideA, 2) + Math.pow(sideB, 2));// Standard a^2 + b^2 = c^2 then square root to get c
         }
 
-        if (angleA == -1 && sideA != -1 && sideC != -1) {
-            angleA = Math.toDegrees(Math.asin(sideA / sideC));
+        // After calculating the missing side, we can calculate the missing angle using trigonometric functions.
+        if (angleA == -1 && sideA != -1 && sideB != -1) { // TOA Tangent = Opposite side A /Adjacent side B
+            angleA = Math.round(Math.toDegrees(Math.atan(sideA / sideB)) * 10) / 10.0;
+            angleB = Math.round((90 - angleA) * 10) / 10.0;
         }
-        if (angleB == -1 && sideB != -1 && sideC != -1) {
-            angleB = Math.toDegrees(Math.acos(sideB / sideC));
+        if (angleB == -1 && sideA != -1 && sideB != -1) {
+            angleB = Math.round(Math.toDegrees(Math.atan(sideB / sideA)) * 10) / 10.0;
+            angleA = Math.round((90 - angleB) * 10) / 10.0;
         }
+
+        // If angle A or B is not present and angle B or A is present, we can calculate angle A or B using the formula:  90 - angle B or A
+        if (angleA != -1 && angleB == -1) {
+            angleB = 90 - angleA;
+        } else if (angleB != -1 && angleA == -1) {
+            angleA = 90 - angleB;
+        }
+    }
+
+    private void calculateSideWithOneSideAndTwoAngles() throws Exception {
+    
     }
 
     private void displayResults() throws Exception {
@@ -136,7 +164,8 @@ class RightSideDegree {
                          "Side c (hypotenuse): " + sideC + "\n\n" +
                          "Angle A: " + angleA + " degrees\n" +
                          "Angle B: " + angleB + " degrees\n"+
-                         "Angle C: 90.0 degrees";
+                         "Angle C: 90.0 degrees\n" +
+                         "Total Angle: " + (angleA + angleB + 90.0) + " degrees\n\n";
     
                          Object[] options = {"OK", "SAVE", "GO BACK"};
                          int option = JOptionPane.showOptionDialog(null, results, "Calculated Values",
@@ -145,13 +174,12 @@ class RightSideDegree {
                          if (option == 1) { // SAVE selected
                              saveResultsOutside();
                          } else if (option == 2) { // GO BACK selected
-                                new TrianglePosition();
+                                new Triangle();
                          }
-        // If OK or the close button is selected, do nothing and the program will terminate naturally.
+        
     }
 
-
-    private class saveResultInside {
+    /* private class saveResultInside {
         saveResultInside(double angleA, double angleB) throws Exception {
             // Specify the relative path to the Midterm Project directory
             File file = new File("Midterm Project/triangle_angles.txt");
@@ -160,19 +188,19 @@ class RightSideDegree {
             writer.println("Angle A: " + angleA + " degrees");
             writer.println("Angle B: " + angleB + " degrees");
             writer.println("Last updated on: " + new java.util.Date());
-            writer.println(); // Adds a newline for separation between entries
+            writer.println(); // Adds a newline for separation
     
             writer.close();
     
             JOptionPane.showMessageDialog(null, "Results have been saved to Midterm Project/triangle_angles.txt", "Results Saved", JOptionPane.INFORMATION_MESSAGE);
             int option = JOptionPane.showOptionDialog(null, "Would you like to calculate again?", "Calculate again?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
             if (option == JOptionPane.YES_OPTION) {
-                new TrianglePosition();
+                new Triangle();
             } else {
                 JOptionPane.showMessageDialog(null, "Happy coding!", "Cheers", JOptionPane.INFORMATION_MESSAGE);
             }
         }
-    }
+    } */
     
     private void saveResultsOutside() throws Exception {
         File file = new File("triangle_sides.txt");
@@ -182,7 +210,8 @@ class RightSideDegree {
         writer.println("Adjacent: " + sideB);
         writer.println("Opposite: " + sideA + "\n");
         writer.println("Angle A: " + angleA + " degrees");
-        writer.println("Angle B: " + angleB + " degrees");
+        writer.println("Angle B: " + angleB + " degrees\n");
+        writer.println("Total Angles: " + (angleA + angleB + 90.0) + "degrees\n");
         writer.println("Last updated on: " + new java.util.Date());
         writer.println(); // Adds a newline for separation between entries
     
@@ -191,7 +220,7 @@ class RightSideDegree {
         JOptionPane.showMessageDialog(null, "Results have been saved to Midterm Project/triangle_sides.txt", "Results Saved", JOptionPane.INFORMATION_MESSAGE);
         int option = JOptionPane.showOptionDialog(null, "Would you like to calculate again?", "Calculate again?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
         if (option == JOptionPane.YES_OPTION) {
-            new TrianglePosition();
+            new Triangle();
         } else {
             JOptionPane.showMessageDialog(null, "Happy coding!", "Cheers", JOptionPane.INFORMATION_MESSAGE);
         }
