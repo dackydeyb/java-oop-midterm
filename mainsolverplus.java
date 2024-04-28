@@ -21,7 +21,7 @@ class WelcomeMessage {
         String[] options = { "START","HISTORY", "EXIT" };
 
         int choice = JOptionPane.showOptionDialog(null,
-                "Welcome to the Main Solver+ !\nThis program will help you solve your triangle math\n\nClick START to continue",
+                "Welcome to the Main Solver+ !\nThis program will help you solve your right triangle\n\nClick START to continue",
                 "Main Solver+", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
         if (choice == 0) {
             new Triangle(); // Go to the Triangle class
