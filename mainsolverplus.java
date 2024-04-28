@@ -216,7 +216,7 @@ class OneAngleOneSide { // Contains all the methods for solving a right triangle
                 "Angle C: 90.0 degrees\n" +
                 "Total Angle: " + (angleA + angleB + 90.0) + " degrees\n\n";
     
-            Object[] options = { "OK", "SAVE", "GO BACK" };
+            Object[] options = { "OK", "SAVE", "HOME" };
             int option = JOptionPane.showOptionDialog(null, results, "Calculated Values",
                 JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);   
                 
@@ -231,8 +231,8 @@ class OneAngleOneSide { // Contains all the methods for solving a right triangle
                 }
             } else if (option == 1) { // SAVE selected
                 saveResultsOutside();
-            } else if (option == 2) { // GO BACK selected
-                new Triangle();
+            } else if (option == 2) { // Return to Welcome Message
+                new WelcomeMessage();
             }
         }
     
@@ -404,7 +404,7 @@ class Sideside {
                 "Angle C: 90.00 degrees\n" +
                 "Total Angle: " + (angleA + angleB + 90.0) + " degrees\n\n";
 
-        Object[] options = { "OK", "SAVE", "GO BACK" };
+        Object[] options = { "OK", "SAVE", "HOME" };
         int option = JOptionPane.showOptionDialog(null, results, "Calculated Values",
             JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);   
             
@@ -419,8 +419,8 @@ class Sideside {
             }
         } else if (option == 1) { // SAVE selected
             saveResultsOutside();
-        } else if (option == 2) { // GO BACK selected
-            new Triangle();
+        } else if (option == 2) { // Returns to Home page
+            new WelcomeMessage();
         }
     }
 
