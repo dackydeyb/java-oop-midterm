@@ -75,6 +75,7 @@ class OneAngleOneSide { // Contains all the methods for solving a right triangle
                     JOptionPane.ERROR_MESSAGE);
             getInput();
         }
+        checkForZeroValues();
         oneSideWithAngle();
         displayResults();
     }
@@ -113,6 +114,14 @@ class OneAngleOneSide { // Contains all the methods for solving a right triangle
         } else { // Cancel or close
             System.exit(0);
             return -1; // To avoid the error "missing return statement"
+        }
+    }
+
+    // Check if any entered value is 0 and display an error message
+    private void checkForZeroValues() throws Exception {
+        if (sideA == 0 || sideB == 0 || sideC == 0 || angleA == 0 || angleB == 0) {
+            JOptionPane.showMessageDialog(null, "Zero values are not allowed. Try again.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            getInput(); // Re-prompt for input after showing the error message.
         }
     }
 
@@ -276,6 +285,7 @@ class Sideside {
                     JOptionPane.ERROR_MESSAGE);
             getInput(); // Re-prompt for input after showing the error message.
         }
+        checkForZeroValues();
         twoSidesWithorWithoutAngle();
         displayResults();
     }
@@ -311,6 +321,14 @@ class Sideside {
         } else { // Cancel or close
             System.exit(0);
             return -1;
+        }
+    }
+
+    // Check if any entered value is 0 and display an error message
+    private void checkForZeroValues() throws Exception {
+        if (sideA == 0 || sideB == 0 || sideC == 0 || angleA == 0 || angleB == 0) {
+            JOptionPane.showMessageDialog(null, "Zero values are not allowed. Try again.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            getInput(); // Re-prompt for input after showing the error message.
         }
     }
 
