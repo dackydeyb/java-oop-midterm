@@ -5,6 +5,7 @@
 
 import javax.swing.*;
 import java.io.File;
+import java.util.Scanner;
 import java.io.PrintWriter;
 import java.io.FileWriter;
 
@@ -17,13 +18,15 @@ public class mainsolverplus {
 // The WelcomeMessage class will display a welcome message and ask the user to click START or EXIT
 class WelcomeMessage {
     WelcomeMessage() throws Exception {
-        String[] options = { "START", "EXIT" };
+        String[] options = { "START","HISTORY", "EXIT" };
 
         int choice = JOptionPane.showOptionDialog(null,
                 "Welcome to the Main Solver+ !\nThis program will help you solve your triangle math\n\nClick START to continue",
                 "Main Solver+", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
         if (choice == 0) {
             new Triangle(); // Go to the Triangle class
+        } else if (choice == 1) {
+           new HistoryReader();
         } else {
             System.exit(0);
         }
@@ -34,7 +37,7 @@ class WelcomeMessage {
 class Triangle {
     Triangle() throws Exception {
 
-        String[] choices = { "-- Please select --", "1 Side and 1 Angle", "2 Sides with or without Angles", "Exit" };
+        String[] choices = { "-- Please select --", "1 Side and 1 Angle", "2 Sides with or without Angles"};
 
         String part = (String) JOptionPane.showInputDialog(null, "How many givens?",
                 "Type of Given", JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
@@ -46,7 +49,7 @@ class Triangle {
         } else if ("2 Sides with or without Angles".equals(part)) {
             new Sideside();
         } else {
-            System.exit(0);
+            new WelcomeMessage();
         }
     }
 }
@@ -222,8 +225,8 @@ class OneAngleOneSide { // Contains all the methods for solving a right triangle
     private void saveResultsOutside() throws Exception {
         File file = new File("One Side One Angle.txt");
 
-        // When writing to a file, often wrap PrintWriter around a FileWriter to handle file creation and character encoding
-        // The second argument true in FileWriter constructor is for enabling the append mode, which allows to add to the existing content of the file instead of overwriting it.
+        // When you're writing to a file, you often wrap PrintWriter around a FileWriter to handle file creation and character encoding
+        // The second argument true in FileWriter constructor is for enabling the append mode, which allows you to add to the existing content of the file instead of overwriting it.
         PrintWriter writer = new PrintWriter(new FileWriter(file, true));
         writer.println("Hypotenuse: " + sideC);
         writer.println("Adjacent: " + sideB);
@@ -421,4 +424,44 @@ class Sideside {
         }
     }
 
+}
+
+// The HistoryReader class will read the history of the calculations made by the user
+// and produces the output in a JOptionPane dialog box.
+class HistoryReader {
+    HistoryReader() throws Exception {
+
+        int choice = JOptionPane.showOptionDialog(null, "Which history would you like to read?", "History",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+                new String[] {"One Side One Angle", "Two sides with or without Angles", "GO BACK" , "EXIT" }, "One Side One Angle");
+
+        if (choice == 0) {
+            File file = new File("One Side One Angle.txt");
+            Scanner scanner = new Scanner(file);
+            String history = ""; // Initialize an empty string to store the history
+            while (scanner.hasNextLine()) {
+                history += scanner.nextLine() + "\n"; // Read the file line by line and concatenate the lines
+            }
+            scanner.close();
+            JOptionPane.showMessageDialog(null, history, "One Side One Angle History", JOptionPane.INFORMATION_MESSAGE);
+            new WelcomeMessage(); // Go back to WelcomeMessage class
+
+        } else if (choice == 1) {
+            File file = new File("Two sides with or without Angles.txt");
+            Scanner scanner = new Scanner(file);
+            String history = "";
+            while (scanner.hasNextLine()) {
+                history += scanner.nextLine() + "\n";
+            }
+            scanner.close();
+            JOptionPane.showMessageDialog(null, history, "Two sides with or without Angles History", JOptionPane.INFORMATION_MESSAGE);
+            new HistoryReader();
+
+        } else if (choice == 2) {
+            new WelcomeMessage();
+        } else {
+            System.exit(0);
+        }
+        
+    }
 }
