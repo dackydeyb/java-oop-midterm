@@ -222,7 +222,7 @@ class OneAngleOneSide { // Contains all the methods for solving a right triangle
     private void saveResultsOutside() throws Exception {
         File file = new File("One Side One Angle.txt");
 
-        // When you're writing to a file, you often wrap PrintWriter around a FileWriter to handle file creation and character encoding
+        // When writing to a file, often wrap PrintWriter around a FileWriter to handle file creation and character encoding
         // The second argument true in FileWriter constructor is for enabling the append mode, which allows you to add to the existing content of the file instead of overwriting it.
         PrintWriter writer = new PrintWriter(new FileWriter(file, true));
         writer.println("Hypotenuse: " + sideC);
