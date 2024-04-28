@@ -216,16 +216,25 @@ class OneAngleOneSide { // Contains all the methods for solving a right triangle
                 "Angle C: 90.0 degrees\n" +
                 "Total Angle: " + (angleA + angleB + 90.0) + " degrees\n\n";
     
-        Object[] options = { "OK", "SAVE", "GO BACK" };
-        int option = JOptionPane.showOptionDialog(null, results, "Calculated Values",
-                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-    
-        if (option == 1) { // SAVE selected
-            saveResultsOutside(); // Save the results to a file and will go to saveResultsOutside method
-        } else if (option == 2) { // GO BACK selected
-            new Triangle();
+            Object[] options = { "OK", "SAVE", "GO BACK" };
+            int option = JOptionPane.showOptionDialog(null, results, "Calculated Values",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);   
+                
+            if (option == 0) {
+                int calculateAgainOption = JOptionPane.showOptionDialog(null, "Would you like to calculate again?", "Calculate again?",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+                if (calculateAgainOption == JOptionPane.YES_OPTION) {
+                new Triangle();
+                } else {
+                JOptionPane.showMessageDialog(null, "Happy coding!", "Cheers", JOptionPane.INFORMATION_MESSAGE);
+                System.exit(0);
+                }
+            } else if (option == 1) { // SAVE selected
+                saveResultsOutside();
+            } else if (option == 2) { // GO BACK selected
+                new Triangle();
+            }
         }
-    }
     
     // Save the results to a file
     // The file will be stacked with the results of each calculation
